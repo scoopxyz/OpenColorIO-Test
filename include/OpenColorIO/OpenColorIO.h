@@ -40,8 +40,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "OpenColorTransforms.h"
 
 /*!rst::
-C++ API
-=======
+# Core API
 
 **Usage Example:** *Compositing plugin that converts from "log" to "lin"*
 
@@ -77,8 +76,7 @@ OCIO_NAMESPACE_ENTER
 {
     ///////////////////////////////////////////////////////////////////////////
     //!rst::
-    // Exceptions
-    // **********
+    //## Exceptions
     
     //!cpp:class:: An exception class to throw for errors detected at
     // runtime.
@@ -124,8 +122,7 @@ OCIO_NAMESPACE_ENTER
     
     ///////////////////////////////////////////////////////////////////////////
     //!rst::
-    // Global
-    // ******
+    //## Global
     
     //!cpp:function::
     // OpenColorIO, during normal usage, tends to cache certain information
@@ -151,9 +148,9 @@ OCIO_NAMESPACE_ENTER
     extern OCIOEXPORT int GetVersionHex();
     
     //!cpp:function:: Get the global logging level.
-    // You can override this at runtime using the :envvar:`OCIO_LOGGING_LEVEL`
+    // You can override this at runtime using the `OCIO_LOGGING_LEVEL`
     // environment variable. The client application that sets this should use
-    // :cpp:func:`SetLoggingLevel`, and not the environment variable. The default value is INFO.
+    // `SetLoggingLevel`, and not the environment variable. The default value is INFO.
     
     extern OCIOEXPORT LoggingLevel GetLoggingLevel();
     
@@ -163,17 +160,16 @@ OCIO_NAMESPACE_ENTER
     
     ///////////////////////////////////////////////////////////////////////////
     //!rst::
-    // Config
-    // ******
+    //## Config
     //
     // A config defines all the color spaces to be available at runtime.
     // 
-    // The color configuration (:cpp:class:`Config`) is the main object for
+    // The color configuration (`Config`) is the main object for
     // interacting with this library. It encapsulates all of the information
-    // necessary to use customized :cpp:class:`ColorSpaceTransform` and
-    // :cpp:class:`DisplayTransform` operations.
+    // necessary to use customized `ColorSpaceTransform` and
+    // `DisplayTransform` operations.
     // 
-    // See the :ref:`user-guide` for more information on
+    // See the `user-guide` for more information on
     // selecting, creating, and working with custom color configurations.
     // 
     // For applications interested in using only one color config at
@@ -191,15 +187,15 @@ OCIO_NAMESPACE_ENTER
     // 
     // Roughly speaking, a novice user should select a
     // default configuration that most closely approximates the use case
-    // (animation, visual effects, etc.), and set the :envvar:`OCIO` environment
+    // (animation, visual effects, etc.), and set the `OCIO` environment
     // variable to point at the root of that configuration.
     // 
-    // .. note::
+    // ?> **Note:**
     //    Initialization using environment variables is typically preferable in
     //    a multi-app ecosystem, as it allows all applications to be
     //    consistently configured.
     //
-    // See :ref:`developers-usageexamples`
+    // See `developers-usageexamples`
     
     //!cpp:function:: Get the current configuration.
     
@@ -215,10 +211,9 @@ OCIO_NAMESPACE_ENTER
     public:
         
         ///////////////////////////////////////////////////////////////////////////
-        //!rst:: .. _cfginit_section:
+        //!rst::
         // 
-        // Initialization
-        // ^^^^^^^^^^^^^^
+        //### Initialization
         
         //!cpp:function:: Constructor a default empty configuration.
         static ConfigRcPtr Create();
@@ -275,10 +270,9 @@ OCIO_NAMESPACE_ENTER
         const char * getCacheID(const ConstContextRcPtr & context) const;
         
         ///////////////////////////////////////////////////////////////////////////
-        //!rst:: .. _cfgresource_section:
+        //!rst::
         // 
-        // Resources
-        // ^^^^^^^^^
+        //### Resources
         // Given a lut src name, where should we find it?
         
         //!cpp:function::
@@ -332,24 +326,27 @@ OCIO_NAMESPACE_ENTER
         void setWorkingDir(const char * dirname);
         
         ///////////////////////////////////////////////////////////////////////////
-        //!rst:: .. _cfgcolorspaces_section:
+        //!rst::
         // 
-        // ColorSpaces
-        // ^^^^^^^^^^^
+        //### ColorSpaces
 
         //!cpp:function:: Get all color spaces having a specific category 
         // in the order they appear in the config file.
         //
-        // .. note::
+        // ?> **Note:**
         //    If the category is null or empty, the method returns 
-        //    all the color spaces like :cpp:func:`Config::getNumColorSpaces` 
-        //    and :cpp:func:`Config::getColorSpaceNameByIndex` do.
+        //    all the color spaces like `Config::getNumColorSpaces` 
+        //    and `Config::getColorSpaceNameByIndex` do.
         //
-        // .. note::
+        // ?> **Note:**
         //    It's worth noticing that the method returns a copy of the 
         //    selected color spaces decoupling the result from the config. 
         //    Hence, any changes on the config do not affect the existing 
         //    color space sets, and vice-versa.
+        //
+        // ?> **Note:**
+        //    These fcns all accept either a color space OR role name.
+        //    (Color space names take precedence over roles.)
         //
         ColorSpaceSetRcPtr getColorSpaces(const char * category) const;
 
@@ -358,10 +355,6 @@ OCIO_NAMESPACE_ENTER
         //!cpp:function:: Will be null for invalid index.
         const char * getColorSpaceNameByIndex(int index) const;
         
-        //!rst::
-        // .. note::
-        //    These fcns all accept either a color space OR role name.
-        //    (Color space names take precedence over roles.)
         
         //!cpp:function:: Will return null if the name is not found.
         ConstColorSpaceRcPtr getColorSpace(const char * name) const;
@@ -370,18 +363,18 @@ OCIO_NAMESPACE_ENTER
         
         //!cpp:function:: Add a color space to the configuration.
         //
-        // .. note::
+        // ?> **Note:**
         //    If another color space is already registered with the same name,
         //    this will overwrite it. This stores a copy of the specified
         //    color space.
-        // .. note::
+        // ?> **Note:**
         //    Adding a color space to a Config does not affect any ColorSpaceSets 
         //    that have already been created.
         void addColorSpace(const ConstColorSpaceRcPtr & cs);
 
         //!cpp:function:: Remove all the color spaces from the configuration.
         //
-        // .. note::
+        // ?> **Note:**
         //    Removing color spaces from a Config does not affect 
         //    any ColorSpaceSets that have already been created.
         void clearColorSpaces();
@@ -401,15 +394,14 @@ OCIO_NAMESPACE_ENTER
         void setStrictParsingEnabled(bool enabled);
         
         ///////////////////////////////////////////////////////////////////////////
-        //!rst:: .. _cfgroles_section:
+        //!rst::
         // 
-        // Roles
-        // ^^^^^
+        //### Roles
         // A role is like an alias for a colorspace. You can query the colorspace
         // corresponding to a role using the normal getColorSpace fcn.
         
         //!cpp:function::
-        // .. note::
+        // ?> **Note:**
         //    Setting the ``colorSpaceName`` name to a null string unsets it.
         void setRole(const char * role, const char * colorSpaceName);
         //!cpp:function::
@@ -424,10 +416,9 @@ OCIO_NAMESPACE_ENTER
         
         
         ///////////////////////////////////////////////////////////////////////////
-        //!rst:: .. _cfgdisplayview_section:
+        //!rst::
         // 
-        // Display/View Registration
-        // ^^^^^^^^^^^^^^^^^^^^^^^^^
+        //### Display/View Registration
         //
         // Looks is a potentially comma (or colon) delimited list of lookNames,
         // Where +/- prefixes are optionally allowed to denote forward/inverse
@@ -484,19 +475,18 @@ OCIO_NAMESPACE_ENTER
         
         
         ///////////////////////////////////////////////////////////////////////////
-        //!rst:: .. _cfgluma_section:
+        //!rst::
         // 
-        // Luma
-        // ^^^^
+        //### Luma
         //
         // Get the default coefficients for computing luma.
         //
-        // .. note::
+        // ?> **Note:**
         //    There is no "1 size fits all" set of luma coefficients. (The
         //    values are typically different for each colorspace, and the
         //    application of them may be nonsensical depending on the
         //    intensity coding anyways). Thus, the 'right' answer is to make
-        //    these functions on the :cpp:class:`Config` class. However, it's
+        //    these functions on the `Config` class. However, it's
         //    often useful to have a config-wide default so here it is. We will
         //    add the colorspace specific luma call if/when another client is
         //    interesting in using it.
@@ -508,10 +498,9 @@ OCIO_NAMESPACE_ENTER
         
         
         ///////////////////////////////////////////////////////////////////////////
-        //!rst:: .. _cflooka_section:
+        //!rst::
         // 
-        // Look
-        // ^^^^
+        //### Look
         //
         // Manager per-shot look settings.
         //
@@ -533,14 +522,13 @@ OCIO_NAMESPACE_ENTER
         
         
         ///////////////////////////////////////////////////////////////////////////
-        //!rst:: .. _cfgprocessors_section:
+        //!rst::
         // 
-        // Processors
-        // ^^^^^^^^^^
+        //### Processors
         //
-        // Create a :cpp:class:`Processor` to assemble a transformation between two 
-        // color spaces.  It may then be used to create a :cpp:class:`CPUProcessor` 
-        // or :cpp:class:`GPUProcessor` to process/convert pixels.
+        // Create a `Processor` to assemble a transformation between two 
+        // color spaces.  It may then be used to create a `CPUProcessor` 
+        // or `GPUProcessor` to process/convert pixels.
 
         //!cpp:function::
         ConstProcessorRcPtr getProcessor(const ConstContextRcPtr & context,
@@ -551,19 +539,18 @@ OCIO_NAMESPACE_ENTER
                                          const ConstColorSpaceRcPtr & dstColorSpace) const;
         
         //!cpp:function::
-        // .. note::
+        // ?> **Note:**
         //    Names can be colorspace name, role name, or a combination of both.
         ConstProcessorRcPtr getProcessor(const char * srcName,
                                          const char * dstName) const;
         //!cpp:function::
-        ConstProcessorRcPtr getProcessor(const ConstContextRcPtr & context,
-                                         const char * srcName,
-                                         const char * dstName) const;
-        
-        //!rst:: Get the processor for the specified transform.
+        // Get the processor for the specified transform.
         //
         // Not often needed, but will allow for the re-use of atomic OCIO
         // functionality (such as to apply an individual LUT file).
+        ConstProcessorRcPtr getProcessor(const ConstContextRcPtr & context,
+                                         const char * srcName,
+                                         const char * dstName) const;
         
         //!cpp:function::
         ConstProcessorRcPtr getProcessor(const ConstTransformRcPtr& transform) const;
@@ -597,8 +584,7 @@ OCIO_NAMESPACE_ENTER
     ///////////////////////////////////////////////////////////////////////////
     //!rst:: .. _colorspace_section:
     // 
-    // ColorSpace
-    // **********
+    //## ColorSpace
     // The *ColorSpace* is the state of an image with respect to colorimetry
     // and color encoding. Transforming images between different
     // *ColorSpaces* is the primary motivation for this library.
@@ -654,8 +640,8 @@ OCIO_NAMESPACE_ENTER
 
         ///////////////////////////////////////////////////////////////////////////
         //!rst::
-        // Categories
-        // ^^^^^^^^^^
+        //### Categories
+        //
         // A category is used to allow applications to filter the list of color spaces 
         // they display in menus based on what that color space is used for.
         //
@@ -671,27 +657,27 @@ OCIO_NAMESPACE_ENTER
         //!cpp:function:: Return true if the category is present.
         bool hasCategory(const char * category) const;
         //!cpp:function:: Add a single category.
-        // .. note:: Will do nothing if the category already exists.
+        // ?> **Note:** Will do nothing if the category already exists.
         void addCategory(const char * category);
         //!cpp:function:: Remove a category.
-        // .. note:: Will do nothing if the category is missing.
+        // ?> **Note:** Will do nothing if the category is missing.
         void removeCategory(const char * category);
         //!cpp:function:: Get the number of categories.
         int getNumCategories() const;
         //!cpp:function:: Return the category name using its index
-        // .. note:: Will be null if the index is invalid.
+        // ?> **Note:** Will be null if the index is invalid.
         const char * getCategory(int index) const;
         // Clear all the categories.
         void clearCategories();
 
         ///////////////////////////////////////////////////////////////////////////
         //!rst::
-        // Data
-        // ^^^^
+        //### Data
+        //
         // ColorSpaces that are data are treated a bit special. Basically, any
         // colorspace transforms you try to apply to them are ignored. (Think
         // of applying a gamut mapping transform to an ID pass). Also, the
-        // :cpp:class:`DisplayTransform` process obeys special 'data min' and
+        // `DisplayTransform` process obeys special 'data min' and
         // 'data max' args.
         //
         // This is traditionally used for pixel data that represents non-color
@@ -704,8 +690,8 @@ OCIO_NAMESPACE_ENTER
         
         ///////////////////////////////////////////////////////////////////////////
         //!rst::
-        // Allocation
-        // ^^^^^^^^^^
+        //### Allocation
+        //
         // If this colorspace needs to be transferred to a limited dynamic
         // range coding space (such as during display with a GPU path), use this
         // allocation to maximize bit efficiency.
@@ -713,9 +699,6 @@ OCIO_NAMESPACE_ENTER
         //!cpp:function::
         Allocation getAllocation() const;
         //!cpp:function::
-        void setAllocation(Allocation allocation);
-        
-        //!rst::
         // Specify the optional variable values to configure the allocation.
         // If no variables are specified, the defaults are used.
         //
@@ -727,6 +710,7 @@ OCIO_NAMESPACE_ENTER
         //    
         //    2 vars: [lg2min, lg2max]
         //    3 vars: [lg2min, lg2max, linear_offset]
+        void setAllocation(Allocation allocation);
         
         //!cpp:function::
         int getAllocationNumVars() const;
@@ -737,8 +721,7 @@ OCIO_NAMESPACE_ENTER
         
         ///////////////////////////////////////////////////////////////////////////
         //!rst::
-        // Transform
-        // ^^^^^^^^^
+        //### Transform
         
         //!cpp:function::
         // If a transform in the specified direction has been specified,
@@ -772,19 +755,19 @@ OCIO_NAMESPACE_ENTER
     
     
     ///////////////////////////////////////////////////////////////////////////
-    //!rst:: .. _colorspaceset_section:
+    //!rst::
     // 
-    // ColorSpaceSet
-    // *************
+    //## ColorSpaceSet
+    //
     // The *ColorSpaceSet* is a set of color spaces (i.e. no color space duplication) 
-    // which could be the result of :cpp:func:`Config::getColorSpaces`
+    // which could be the result of `Config::getColorSpaces`
     // or built from scratch.
     // 
-    // .. note::
+    // ?> **Note:**
     //    The color spaces are decoupled from the config ones, i.e., any 
     //    changes to the set itself or to its color spaces do not affect the 
     //    original color spaces from the configuration.  If needed, 
-    //    use :cpp:func:`Config::addColorSpace` to update the configuration.
+    //    use `Config::addColorSpace` to update the configuration.
 
     //!cpp:class::
     class OCIOEXPORT ColorSpaceSet
@@ -797,7 +780,7 @@ OCIO_NAMESPACE_ENTER
         ColorSpaceSetRcPtr createEditableCopy() const;
 
         //!cpp:function:: Return true if the two sets are equal.
-        // .. note:: The comparison is done on the color space names (not a deep comparison).
+        // ?> **Note:** The comparison is done on the color space names (not a deep comparison).
         bool operator==(const ColorSpaceSet & css) const;
         //!cpp:function:: Return true if the two sets are different.
         bool operator!=(const ColorSpaceSet & css) const;
@@ -812,7 +795,7 @@ OCIO_NAMESPACE_ENTER
         ConstColorSpaceRcPtr getColorSpaceByIndex(int index) const;
 
         //!rst::
-        // .. note::
+        // ?> **Note:**
         //    These fcns only accept color space names (i.e. no role name).
 
         //!cpp:function:: Will return null if the name is not found.
@@ -822,7 +805,7 @@ OCIO_NAMESPACE_ENTER
 
         //!cpp:function:: Add color space(s).
         //
-        // .. note::
+        // ?> **Note:**
         //    If another color space is already registered with the same name,
         //    this will overwrite it. This stores a copy of the specified
         //    color space(s).
@@ -831,7 +814,7 @@ OCIO_NAMESPACE_ENTER
 
         //!cpp:function:: Remove color space(s) using color space names (i.e. no role name).
         //
-        // .. note::
+        // ?> **Note:**
         //    The removal of a missing color space does nothing.
         void removeColorSpace(const char * name);
         void removeColorSpaces(const ConstColorSpaceSetRcPtr & cs);
@@ -856,7 +839,7 @@ OCIO_NAMESPACE_ENTER
     };
 
 
-    // .. note::
+    // ?> **Note:**
     //    All these fcns provide some operations on two color space sets 
     //    where the result contains copied color spaces and no duplicates.
 
@@ -874,10 +857,10 @@ OCIO_NAMESPACE_ENTER
 
 
     ///////////////////////////////////////////////////////////////////////////
-    //!rst:: .. _look_section:
+    //!rst::
     // 
-    // Look
-    // ****
+    //## Look
+    //
     // The *Look* is an 'artistic' image modification, in a specified image
     // state.
     // The processSpace defines the ColorSpace the image is required to be
@@ -938,10 +921,10 @@ OCIO_NAMESPACE_ENTER
     
     ///////////////////////////////////////////////////////////////////////////
     //!rst::
-    // Processor
-    // *********
+    //## Processor
+    //
     // The *Processor* represents a specific color transformation which is 
-    // the result of :cpp:func:`Config::getProcessor`.
+    // the result of `Config::getProcessor`.
 
     //!cpp:class::
     class OCIOEXPORT Processor
@@ -1003,7 +986,7 @@ OCIO_NAMESPACE_ENTER
         //!rst::
         // GPU Renderer
         // ^^^^^^^^^^^^
-        // Get an optimized :cpp:class:`GPUProcessor` instance.
+        // Get an optimized `GPUProcessor` instance.
 
         //!cpp:function::        
         ConstGPUProcessorRcPtr getDefaultGPUProcessor() const;
@@ -1013,11 +996,11 @@ OCIO_NAMESPACE_ENTER
         
         ///////////////////////////////////////////////////////////////////////////
         //!rst::
-        // CPU Renderer
-        // ^^^^^^^^^^^^
-        // Get an optimized :cpp:class:`CPUProcessor` instance.
+        //### CPU Renderer
+        //
+        // Get an optimized `CPUProcessor` instance.
         //        
-        // .. note::
+        // ?> **Note:**
         //    This may provide higher fidelity than anticipated due to internal
         //    optimizations. For example, if the inputColorSpace and the
         //    outputColorSpace are members of the same family, no conversion
@@ -1025,7 +1008,7 @@ OCIO_NAMESPACE_ENTER
         //    should be added.
 
 
-        // .. note::
+        // ?> **Note:**
         //    The typical use case to apply color processing to an image is:
         // 
         // .. code-block:: cpp
@@ -1075,8 +1058,7 @@ OCIO_NAMESPACE_ENTER
     
     ///////////////////////////////////////////////////////////////////////////
     //!rst::
-    // CPUProcessor
-    // ************
+    //### CPUProcessor
     
     //!cpp:class::
     class CPUProcessor
@@ -1092,7 +1074,7 @@ OCIO_NAMESPACE_ENTER
         BitDepth getInputBitDepth() const;
         BitDepth getOutputBitDepth() const;
 
-        //!cpp:function:: Refer to :cpp:func:`GPUProcessor::getDynamicProperty`.
+        //!cpp:function:: Refer to `GPUProcessor::getDynamicProperty`.
         DynamicPropertyRcPtr getDynamicProperty(DynamicPropertyType type) const;
 
         ///////////////////////////////////////////////////////////////////////////
@@ -1109,7 +1091,7 @@ OCIO_NAMESPACE_ENTER
         // Apply to a single pixel respecting that the input and output bit-depths
         // be identical.
         // 
-        // .. note::
+        // ?> **Note:**
         //    This is not as efficient as applying to an entire image at once.
         //    If you are processing multiple pixels, and have the flexibility,
         //    use the above function instead.
@@ -1139,8 +1121,7 @@ OCIO_NAMESPACE_ENTER
 
     ///////////////////////////////////////////////////////////////////////////
     //!rst::
-    // GPUProcessor
-    // ************
+    //### GPUProcessor
     
     //!cpp:class::
     class GPUProcessor
@@ -1162,9 +1143,9 @@ OCIO_NAMESPACE_ENTER
         //                requested property, only ones for which dynamic has
         //                been enabled will be controlled.
         //
-        // .. note:: 
+        // ?> **Note:** 
         //    The dynamic properties in this object are decoupled from the ones 
-        //    in the :cpp:class:`Processor` it was generated from.
+        //    in the `Processor` it was generated from.
         //
         DynamicPropertyRcPtr getDynamicProperty(DynamicPropertyType type) const;
 
@@ -1233,8 +1214,7 @@ OCIO_NAMESPACE_ENTER
     
     ///////////////////////////////////////////////////////////////////////////
     //!rst::
-    // Baker
-    // *****
+    //## Baker
     // 
     // In certain situations it is necessary to serialize transforms into a variety
     // of application specific lut formats. The Baker can be used to create lut
@@ -1357,8 +1337,7 @@ OCIO_NAMESPACE_ENTER
     
     ///////////////////////////////////////////////////////////////////////////
     //!rst::
-    // ImageDesc
-    // *********
+    //## ImageDesc
     
     //!rst::
     // .. c:var:: const ptrdiff_t AutoStride
@@ -1386,8 +1365,7 @@ OCIO_NAMESPACE_ENTER
     
     ///////////////////////////////////////////////////////////////////////////
     //!rst::
-    // PackedImageDesc
-    // ^^^^^^^^^^^^^^^
+    //## PackedImageDesc
 
     //!cpp:class::
     class OCIOEXPORT PackedImageDesc : public ImageDesc
@@ -1402,12 +1380,12 @@ OCIO_NAMESPACE_ENTER
         // If a 4th channel is specified, it is assumed to be alpha
         // information.  Channels > 4 will be ignored.
         //
-        // .. note:: 
+        // ?> **Note:** 
         // The methods assume the CPUProcessor bit-depth type for the data pointer.
 
         //!cpp:function::
         //
-        // .. note:: 
+        // ?> **Note:** 
         //    numChannels must be 3 (RGB) or 4 (RGBA).
         PackedImageDesc(void * data,
                         long width, long height,
@@ -1415,7 +1393,7 @@ OCIO_NAMESPACE_ENTER
 
         //!cpp:function::
         //
-        // .. note:: 
+        // ?> **Note:** 
         //    numChannels smust be 3 (RGB) or 4 (RGBA).
         PackedImageDesc(void * data,
                         long width, long height,
@@ -1475,8 +1453,7 @@ OCIO_NAMESPACE_ENTER
     
     ///////////////////////////////////////////////////////////////////////////
     //!rst::
-    // PlanarImageDesc
-    // ^^^^^^^^^^^^^^^
+    //## PlanarImageDesc
     
     //!cpp:class::
     class OCIOEXPORT PlanarImageDesc : public ImageDesc
@@ -1489,7 +1466,7 @@ OCIO_NAMESPACE_ENTER
         // first pixel to process (which need not be the first pixel of the image).
         // Pass NULL for aData if no alpha exists (r/g/bData must not be NULL).
         //
-        // .. note:: 
+        // ?> **Note:** 
         // The methods assume the CPUProcessor bit-depth type for the R/G/B/A data pointers.
 
         //!cpp:function::
@@ -1540,8 +1517,8 @@ OCIO_NAMESPACE_ENTER
     
     ///////////////////////////////////////////////////////////////////////////
     //!rst::
-    // GpuShaderDesc
-    // *************
+    //## GpuShaderDesc
+    //
     // This class holds the GPU-related information needed to build a shader program
     // from a specific processor.
     //
@@ -1723,7 +1700,7 @@ OCIO_NAMESPACE_ENTER
 
         //!cpp:function::  Set a prefix to the resource name
         //
-        // .. note::
+        // ?> **Note:**
         //   Some applications require that textures, uniforms, 
         //   and helper methods be uniquely named because several 
         //   processor instances could coexist.
@@ -1821,7 +1798,7 @@ OCIO_NAMESPACE_ENTER
 
         //!cpp:function:: Create the OCIO shader program
         //
-        // .. note::
+        // ?> **Note:**
         // 
         //   The OCIO shader program is decomposed to allow a specific implementation
         //   to change some parts. Some product integrations add the color processing
@@ -1859,8 +1836,7 @@ OCIO_NAMESPACE_ENTER
     
     ///////////////////////////////////////////////////////////////////////////
     //!rst::
-    // Context
-    // *******
+    //## Context
     
     //!cpp:class::
     class OCIOEXPORT Context
